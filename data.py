@@ -39,5 +39,8 @@ platform_long2 = pygame.Rect(200, 500, 200, 20)
 platform_long3 = pygame.Rect(500, 550, 600, 20)
 platform_long4 = pygame.Rect(-300, 500, 300, 20)
 platform_long5 = pygame.Rect(600, 400, 300, 20)
-platform_list = [platform_long, platform_long2, platform_long3, platform_long4, platform_long5]
+platform_long6 = pygame.Rect(1000, 350, 800, 20)
+platform_long7 = pygame.Rect(1750, 250, 800, 20)
+platform_list = [platform_long, platform_long2, platform_long3, platform_long4, platform_long5, platform_long6,
+                 platform_long7]
 
