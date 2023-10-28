@@ -1,6 +1,6 @@
-
 import pygame
 import sys
+
 
 # Initialize Pygame
 pygame.init()
@@ -17,6 +17,7 @@ jump_power = -20
 gravity = 1
 grounded = False
 facing_right = True
+player_state = "idle"
 
 # Colors
 WHITE = (255, 255, 255)
@@ -27,6 +28,7 @@ PLATFORM = '#374b43'
 # Create the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Platformer")
+from data import *
 
 # Create the player
 player_idle_1 = pygame.image.load('graphics/player/idle01.png').convert_alpha()
@@ -67,9 +69,15 @@ def player_animation():
         player_animation_index = 0
 
     if facing_right:
-        player_surf = player_idle[int(player_animation_index)]
+        if player_state == 'idle':
+            player_surf = player_idle[int(player_animation_index)]
+        elif player_state == 'right':
+            player_surf = player_run[int(player_animation_index)]
     else:
-        player_surf = player_idle_flip[int(player_animation_index)]
+        if player_state == 'idle':
+            player_surf = player_idle_flip[int(player_animation_index)]
+        elif player_state == 'left':
+            player_surf = player_run_flip[int(player_animation_index)]
 
     # player_surf = pygame.transform.flip(player_surf, True, False)  # Flip the image horizontally
 
@@ -96,18 +104,22 @@ while running:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a] or keys[pygame.K_LEFT]:
         facing_right = False
+        player_state = "left"
         if player_rect.left > SCROLL_THRESH:
             player_rect.x -= move_speed
         else:
             player_rect.left = SCROLL_THRESH
             scroll_map('left')
-    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+    elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         facing_right = True
+        player_state = "right"
         if player_rect.right < SCREEN_WIDTH - SCROLL_THRESH:
             player_rect.x += move_speed
         else:
             player_rect.right = SCREEN_WIDTH - SCROLL_THRESH
             scroll_map('right')
+    else:
+        player_state = 'idle'
 
     # Gravity
     gravity += 1
