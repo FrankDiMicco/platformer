@@ -6,9 +6,14 @@ player_idle_1 = pygame.image.load('graphics/player/idle01.png').convert_alpha()
 player_idle_2 = pygame.image.load('graphics/player/idle02.png').convert_alpha()
 player_idle_3 = pygame.image.load('graphics/player/idle03.png').convert_alpha()
 player_idle_4 = pygame.image.load('graphics/player/idle04.png').convert_alpha()
-
 player_idle = [player_idle_1, player_idle_2, player_idle_3, player_idle_4]
 player_idle_flip = [pygame.transform.flip(frame, True, False) for frame in player_idle]
+
+
+# Create player jump animation - running vs stationary, start-mid-end sequences too
+player_jump_01 = pygame.image.load('graphics/player/jump.png')
+player_jump = [player_jump_01]
+player_jump_flip = [pygame.transform.flip(frame, True, False) for frame in player_jump]
 
 
 # Create the player run animation lists

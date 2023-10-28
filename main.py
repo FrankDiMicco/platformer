@@ -49,20 +49,43 @@ def scroll_map(direction):
 
 def player_animation():
     global player_surf, player_animation_index
-    player_animation_index += 0.1
-    if player_animation_index >= len(player_idle):
-        player_animation_index = 0
+    if grounded:
+        if facing_right:
+            if player_state == 'idle':
+                player_animation_index += 0.1
+                if player_animation_index >= len(player_idle):
+                    player_animation_index = 0
+                player_surf = player_idle[int(player_animation_index)]
 
-    if facing_right:
-        if player_state == 'idle':
-            player_surf = player_idle[int(player_animation_index)]
-        elif player_state == 'right':
-            player_surf = player_run[int(player_animation_index)]
+            elif player_state == 'right':
+                player_animation_index += 0.20
+                if player_animation_index >= len(player_run):
+                    player_animation_index = 0
+                player_surf = player_run[int(player_animation_index)]
+        else:
+            if player_state == 'idle':
+                player_animation_index += 0.1
+                if player_animation_index >= len(player_idle):
+                    player_animation_index = 0
+                player_surf = player_idle_flip[int(player_animation_index)]
+
+            elif player_state == 'left':
+                player_animation_index += 0.20
+                if player_animation_index >= len(player_run):
+                    player_animation_index = 0
+                player_surf = player_run_flip[int(player_animation_index)]
     else:
-        if player_state == 'idle':
-            player_surf = player_idle_flip[int(player_animation_index)]
-        elif player_state == 'left':
-            player_surf = player_run_flip[int(player_animation_index)]
+        if facing_right:
+            player_animation_index += 0.1
+            if player_animation_index >= len(player_jump):
+                player_animation_index = 0
+            player_surf = player_jump[int(player_animation_index)]
+
+        else:
+            player_animation_index += 0.1
+            if player_animation_index >= len(player_jump):
+                player_animation_index = 0
+            player_surf = player_jump_flip[int(player_animation_index)]
 
     # player_surf = pygame.transform.flip(player_surf, True, False)  # Flip the image horizontally
 
