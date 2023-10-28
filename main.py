@@ -149,6 +149,7 @@ while running:
     blit_position = (player_rect.centerx - player_surf.get_width() // 2, (player_rect.centery - player_surf.get_height() // 2) - 5)
     screen.blit(player_surf, blit_position)
 
+    # Blit the platforms
     for platform in platform_list:
         pygame.draw.rect(screen, PLATFORM, platform)
 
