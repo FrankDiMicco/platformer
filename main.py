@@ -42,9 +42,9 @@ player_y_velocity = 0
 def scroll_map(direction):
     for platform in platform_list:
         if direction == 'left':
-            platform.x += move_speed
+            platform.x += player_x_velocity
         elif direction == 'right':
-            platform.x -= move_speed
+            platform.x -= player_x_velocity
 
 
 def player_animation():
@@ -104,7 +104,7 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and grounded:
                 grounded = False
-                gravity = jump_power
+                player_y_velocity = jump_power
 
     # Horizontal movement and screen scroll
     keys = pygame.key.get_pressed()
@@ -112,7 +112,8 @@ while running:
         facing_right = False
         player_state = "left"
         if player_rect.left > SCROLL_THRESH:
-            player_rect.x -= move_speed
+            player_x_velocity = move_speed
+            player_rect.x -= player_x_velocity
         else:
             player_rect.left = SCROLL_THRESH
             scroll_map('left')
@@ -120,7 +121,8 @@ while running:
         facing_right = True
         player_state = "right"
         if player_rect.right < SCREEN_WIDTH - SCROLL_THRESH:
-            player_rect.x += move_speed
+            player_x_velocity = move_speed
+            player_rect.x += player_x_velocity
         else:
             player_rect.right = SCREEN_WIDTH - SCROLL_THRESH
             scroll_map('right')
@@ -128,13 +130,13 @@ while running:
         player_state = 'idle'
 
     # Gravity
-    gravity += 1
-    player_rect.y += gravity
+    player_y_velocity += gravity
+    player_rect.y += player_y_velocity
 
     # Collision with platforms
     for platform in platform_list:
         if player_rect.colliderect(platform):
-            gravity = 0
+            player_y_velocity = 0
             grounded = True
             if player_rect.top < platform.top:
                 player_rect.bottom = platform.top
@@ -156,6 +158,7 @@ while running:
     # Show player_rect - for debugging
     #pygame.draw.rect(screen, (0, 0, 255), player_rect, 2)
     #pygame.draw.rect(screen, (255, 0, 0), player_rect, 2)
+    print(gravity)
 
     # If player falls off map
     if player_rect.y > 600:
