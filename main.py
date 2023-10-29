@@ -147,7 +147,9 @@ while running:
                 player_y_velocity = 0
                 grounded = True
             elif player_rect.left < platform.left:
-                print("left collision")
+                player_rect.right = platform.left
+            elif player_rect.right > platform.right:
+                player_rect.left = platform.right
 
 
 
