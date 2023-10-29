@@ -1,5 +1,6 @@
 import pygame
 import sys
+from platforms import Platform, platform_list
 
 # Initialize Pygame
 pygame.init()
@@ -41,9 +42,9 @@ player_y_velocity = 0
 def scroll_map(direction):
     for platform in platform_list:
         if direction == 'left':
-            platform.x += player_x_velocity
+            platform.move(player_x_velocity, 0)
         elif direction == 'right':
-            platform.x -= player_x_velocity
+            platform.move(-player_x_velocity, 0)
 
 
 def player_animation():
@@ -135,34 +136,33 @@ while running:
     player_rect.y += player_y_velocity
 
     # Collision with platforms
-    # region
     for platform in platform_list:
-        if player_rect.colliderect(platform):
-            if player_rect.top < platform.top:
-                player_rect.bottom = platform.top
+        if player_rect.colliderect(platform.rect):
+            if player_rect.top < platform.rect.top:
+                player_rect.bottom = platform.rect.top
                 player_y_velocity = 0
                 grounded = True
-            elif player_rect.top > platform.top:
-                player_rect.top = platform.bottom
+            elif player_rect.top > platform.rect.top:
+                player_rect.top = platform.rect.bottom
                 player_y_velocity = 0
                 grounded = True
-            elif player_rect.left < platform.left:
-                player_rect.right = platform.left
-            elif player_rect.right > platform.right:
-                player_rect.left = platform.right
-    # endregion
+            elif player_rect.left < platform.rect.left:
+                player_rect.right = platform.rect.left
+            elif player_rect.right > platform.rect.right:
+                player_rect.left = platform.rect.right
 
     # Clear the screen
     screen.fill(GREEN)
 
     # Draw game elements
     player_animation()
-    blit_position = (player_rect.centerx - player_surf.get_width() // 2, (player_rect.centery - player_surf.get_height() // 2) - 5)
+    blit_position = (
+    player_rect.centerx - player_surf.get_width() // 2, (player_rect.centery - player_surf.get_height() // 2) - 5)
     screen.blit(player_surf, blit_position)
 
     # Blit the platforms
     for platform in platform_list:
-        pygame.draw.rect(screen, PLATFORM, platform)
+        platform.draw(screen)
 
     # Show player_rect - for debugging
     # pygame.draw.rect(screen, (0, 0, 255), player_rect, 2)
