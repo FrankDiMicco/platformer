@@ -1,7 +1,6 @@
 import pygame
 import sys
 
-
 # Initialize Pygame
 pygame.init()
 
@@ -136,6 +135,7 @@ while running:
     player_rect.y += player_y_velocity
 
     # Collision with platforms
+    # region
     for platform in platform_list:
         if player_rect.colliderect(platform):
             if player_rect.top < platform.top:
@@ -150,8 +150,7 @@ while running:
                 player_rect.right = platform.left
             elif player_rect.right > platform.right:
                 player_rect.left = platform.right
-
-
+    # endregion
 
     # Clear the screen
     screen.fill(GREEN)
@@ -166,8 +165,8 @@ while running:
         pygame.draw.rect(screen, PLATFORM, platform)
 
     # Show player_rect - for debugging
-    #pygame.draw.rect(screen, (0, 0, 255), player_rect, 2)
-    #pygame.draw.rect(screen, (255, 0, 0), player_rect, 2)
+    # pygame.draw.rect(screen, (0, 0, 255), player_rect, 2)
+    # pygame.draw.rect(screen, (255, 0, 0), player_rect, 2)
 
     # If player falls off map
     if player_rect.y > 600:
