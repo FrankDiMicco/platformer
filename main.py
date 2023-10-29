@@ -14,7 +14,7 @@ SCROLL_THRESH = 250
 # Variables
 move_speed = 6
 jump_power = -20
-gravity = 1
+gravity = 0.9
 grounded = False
 facing_right = True
 player_state = "idle"
@@ -107,6 +107,7 @@ while running:
                 player_y_velocity = jump_power
 
     # Horizontal movement and screen scroll
+    # region
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a] or keys[pygame.K_LEFT]:
         facing_right = False
@@ -128,6 +129,7 @@ while running:
             scroll_map('right')
     else:
         player_state = 'idle'
+    # endregion
 
     # Gravity
     player_y_velocity += gravity
@@ -136,12 +138,18 @@ while running:
     # Collision with platforms
     for platform in platform_list:
         if player_rect.colliderect(platform):
-            player_y_velocity = 0
-            grounded = True
             if player_rect.top < platform.top:
                 player_rect.bottom = platform.top
+                player_y_velocity = 0
+                grounded = True
             elif player_rect.top > platform.top:
                 player_rect.top = platform.bottom
+                player_y_velocity = 0
+                grounded = True
+            elif player_rect.left < platform.left:
+                print("left collision")
+
+
 
     # Clear the screen
     screen.fill(GREEN)
@@ -158,7 +166,6 @@ while running:
     # Show player_rect - for debugging
     #pygame.draw.rect(screen, (0, 0, 255), player_rect, 2)
     #pygame.draw.rect(screen, (255, 0, 0), player_rect, 2)
-    print(gravity)
 
     # If player falls off map
     if player_rect.y > 600:
