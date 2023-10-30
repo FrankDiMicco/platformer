@@ -1,4 +1,5 @@
 import pygame
+from pygame.sprite import Sprite
 import sys
 from platforms import Platform, platform_list
 
@@ -9,7 +10,7 @@ pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FPS = 60
-SCROLL_THRESH = 250
+H_SCROLL_THRESH = 250
 
 # Variables
 move_speed = 6
@@ -112,20 +113,20 @@ while running:
     if keys[pygame.K_a] or keys[pygame.K_LEFT]:
         facing_right = False
         player_state = "left"
-        if player_rect.left > SCROLL_THRESH:
+        if player_rect.left > H_SCROLL_THRESH:
             player_x_velocity = move_speed
             player_rect.x -= player_x_velocity
         else:
-            player_rect.left = SCROLL_THRESH
+            player_rect.left = H_SCROLL_THRESH
             scroll_map('left')
     elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         facing_right = True
         player_state = "right"
-        if player_rect.right < SCREEN_WIDTH - SCROLL_THRESH:
+        if player_rect.right < SCREEN_WIDTH - H_SCROLL_THRESH:
             player_x_velocity = move_speed
             player_rect.x += player_x_velocity
         else:
-            player_rect.right = SCREEN_WIDTH - SCROLL_THRESH
+            player_rect.right = SCREEN_WIDTH - H_SCROLL_THRESH
             scroll_map('right')
     else:
         player_state = 'idle'
