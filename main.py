@@ -43,7 +43,7 @@ class Player(Sprite):
         self.rect.topleft = (300, 50)
 
         self.move_speed = 6
-        self.jump_power = -20
+        self.jump_power = -18
         
         self.x_velocity = 0
         self.y_velocity = 0
