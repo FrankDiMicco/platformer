@@ -18,6 +18,7 @@ jump_power = -20
 gravity = 0.9
 facing_right = True
 player_state = "idle"
+y_velocity_max = 20
 
 # Colors
 WHITE = (255, 255, 255)
@@ -36,9 +37,6 @@ player_surf = player_idle[player_animation_index]
 player_rect = pygame.Rect(300, 50, 28, 40)
 
 
-# player_x_velocity = 0
-# player_y_velocity = 0
-
 class Player(Sprite):
     def __init__(self):
         super().__init__()
@@ -49,7 +47,6 @@ class Player(Sprite):
 
         self.x_velocity = 0
         self.y_velocity = 0
-        self.jump_buffer = 0
 
         self.grounded = False
         self.facing_right = True
@@ -60,32 +57,87 @@ class Player(Sprite):
         # Player movement logic, animations, etc. can go here
         # Gravity
         self.y_velocity += gravity
-        self.rect.y += self.y_velocity
+        if self.y_velocity < y_velocity_max:
+            self.rect.y += self.y_velocity
+        else:
+            self.rect.y += y_velocity_max
 
         # Animation
         self.handle_animation()
 
     def handle_animation(self):
-        # Player animation handling logic goes here.
-        pass  # Placeholder, fill this in with your animation logic from above.
+        if self.grounded:
+            if self.facing_right:
+                if self.state == 'idle':
+                    self.animation_index += 0.1
+                    if self.animation_index >= len(player_idle):
+                        self.animation_index = 0
+                    self.image = player_idle[int(self.animation_index)]
+                elif self.state == 'right':
+                    self.animation_index += 0.20
+                    if self.animation_index >= len(player_run):
+                        self.animation_index = 0
+                    self.image = player_run[int(self.animation_index)]
+            else:  # if not facing right
+                if self.state == 'idle':
+                    self.animation_index += 0.1
+                    if self.animation_index >= len(player_idle):
+                        self.animation_index = 0
+                    self.image = player_idle_flip[int(self.animation_index)]
+                elif self.state == 'left':
+                    self.animation_index += 0.20
+                    if self.animation_index >= len(player_run):
+                        self.animation_index = 0
+                    self.image = player_run_flip[int(self.animation_index)]
+        else:  # if not grounded
+            if self.facing_right:
+                self.animation_index += 0.1
+                if self.animation_index >= len(player_jump):
+                    self.animation_index = 0
+                self.image = player_jump[int(self.animation_index)]
+            else:
+                self.animation_index += 0.1
+                if self.animation_index >= len(player_jump):
+                    self.animation_index = 0
+                self.image = player_jump_flip[int(self.animation_index)]
+
+    def handle_input(self, scroll_callback):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            self.move_left()
+        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            self.move_right()
+        else:
+            self.stop_moving()
+
+        self.move_horizontal(scroll_callback)
 
     def jump(self):
         if self.grounded:
             self.y_velocity = jump_power
             self.grounded = False  # Immediately set grounded to False after a jump
-            self.jump_buffer = 5
-            print("jump button pressed")
-            print(self.y_velocity)
 
     def move_left(self):
         self.facing_right = False
         self.state = "left"
-        self.x_velocity = move_speed
+        self.x_velocity = -move_speed
 
     def move_right(self):
         self.facing_right = True
         self.state = "right"
-        self.x_velocity = -move_speed
+        self.x_velocity = move_speed
+
+    def move_horizontal(self, scroll_callback):
+        if self.facing_right:
+            if self.rect.right < SCREEN_WIDTH - H_SCROLL_THRESH:
+                self.rect.x += self.x_velocity
+            else:
+                scroll_callback('right')
+        else:
+            if self.rect.left > H_SCROLL_THRESH:
+                self.rect.x += self.x_velocity
+            else:
+                scroll_callback('left')
 
     def stop_moving(self):
         self.state = "idle"
@@ -95,52 +147,9 @@ class Player(Sprite):
 def scroll_map(direction):
     for platform in platform_list:
         if direction == 'left':
-            platform.move(player.x_velocity, 0)
+            platform.move(-player.x_velocity, 0)
         elif direction == 'right':
             platform.move(-player.x_velocity, 0)
-
-
-def player_animation():
-    global player_surf, player_animation_index
-    if player.grounded:
-        if facing_right:
-            if player_state == 'idle':
-                player_animation_index += 0.1
-                if player_animation_index >= len(player_idle):
-                    player_animation_index = 0
-                player_surf = player_idle[int(player_animation_index)]
-
-            elif player_state == 'right':
-                player_animation_index += 0.20
-                if player_animation_index >= len(player_run):
-                    player_animation_index = 0
-                player_surf = player_run[int(player_animation_index)]
-        else:
-            if player_state == 'idle':
-                player_animation_index += 0.1
-                if player_animation_index >= len(player_idle):
-                    player_animation_index = 0
-                player_surf = player_idle_flip[int(player_animation_index)]
-
-            elif player_state == 'left':
-                player_animation_index += 0.20
-                if player_animation_index >= len(player_run):
-                    player_animation_index = 0
-                player_surf = player_run_flip[int(player_animation_index)]
-    else:
-        if facing_right:
-            player_animation_index += 0.1
-            if player_animation_index >= len(player_jump):
-                player_animation_index = 0
-            player_surf = player_jump[int(player_animation_index)]
-
-        else:
-            player_animation_index += 0.1
-            if player_animation_index >= len(player_jump):
-                player_animation_index = 0
-            player_surf = player_jump_flip[int(player_animation_index)]
-
-    # player_surf = pygame.transform.flip(player_surf, True, False)  # Flip the image horizontally
 
 
 # Game loop
@@ -159,29 +168,8 @@ while running:
             if event.key == pygame.K_SPACE:
                 player.jump()
 
-    # Horizontal movement and screen scroll
-    # region
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-        player.move_left()
-        if player.rect.left > H_SCROLL_THRESH:
-            player.x_velocity = move_speed
-            player.rect.x -= player.x_velocity
-        else:
-            player.rect.left = H_SCROLL_THRESH
-            scroll_map('left')
-    elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-        player.facing_right = True
-        player.state = "right"
-        if player.rect.right < SCREEN_WIDTH - H_SCROLL_THRESH:
-            player.x_velocity = move_speed
-            player.rect.x += player.x_velocity
-        else:
-            player.rect.right = SCREEN_WIDTH - H_SCROLL_THRESH
-            scroll_map('right')
-    else:
-        player.state = 'idle'
-    # endregion
+    # Horizontal movement
+    player.handle_input(scroll_map)
 
     # Clear the screen
     screen.fill(GREEN)
@@ -191,10 +179,10 @@ while running:
     # Blit the platforms
     for platform in platform_list:
         platform.draw(screen)
-    blit_position = (
-        player.rect.centerx - player.image.get_width() // 2, (player.rect.centery - player.image.get_height() // 2) - 5)
+
+    blit_pos = (player.rect.centerx - player.image.get_width() // 2, (player.rect.centery - player.image.get_height() // 2) - 5)
     player.update()
-    screen.blit(player.image, blit_position)
+    screen.blit(player.image, blit_pos)
 
     # Draw game elements
 
@@ -202,7 +190,7 @@ while running:
     # region
     for platform in platform_list:
         if player.rect.colliderect(platform.rect):
-            if player.rect.top < platform.rect.top and player.jump_buffer <= 0:
+            if player.rect.top < platform.rect.top:
                 player.rect.bottom = platform.rect.top
                 player.y_velocity = 0
                 player.grounded = True
@@ -223,12 +211,9 @@ while running:
     # print(player.y_velocity)
 
     # If player falls off map
-    if player.rect.y > 600:
+    if player.rect.top > SCREEN_HEIGHT:
         player.rect.y = 0
         player.rect.x = 300
-
-    # Count down jump_buffer
-    player.jump_buffer = max(0, player.jump_buffer - 1)
 
     # Update the screen
     pygame.display.flip()
