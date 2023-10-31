@@ -41,11 +41,12 @@ class Player(Sprite):
         self.player_height = 40
         self.rect = pygame.Rect(300, 50, self.player_width, self.player_height)
         self.rect.topleft = (300, 50)
+        self.blit_pos = None
 
         self.move_speed = 6
         self.jump_power = -18
         self.double_jump = False
-        
+
         self.x_velocity = 0
         self.y_velocity = 0
         self.y_velocity_max = 20
@@ -66,6 +67,10 @@ class Player(Sprite):
 
         # Animation
         self.handle_animation()
+
+        # Calculate position to blit player
+        self.blit_pos = (
+        self.rect.centerx - self.image.get_width() // 2, (self.rect.centery - self.image.get_height() // 2) - 5)
 
     def check_collisions(self, platforms):
         for platform in platforms:
@@ -203,10 +208,8 @@ while running:
     # Blit the platforms
     platform_sprites.draw(screen)
 
-    blit_pos = (
-    player.rect.centerx - player.image.get_width() // 2, (player.rect.centery - player.image.get_height() // 2) - 5)
     player.update()
-    screen.blit(player.image, blit_pos)
+    screen.blit(player.image, player.blit_pos)
 
     # Collision with platforms
     player.check_collisions(platform_sprites)
