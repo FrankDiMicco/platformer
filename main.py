@@ -13,12 +13,7 @@ FPS = 60
 H_SCROLL_THRESH = 250
 
 # Variables
-move_speed = 6
-jump_power = -20
 gravity = 0.9
-facing_right = True
-player_state = "idle"
-y_velocity_max = 20
 
 # Colors
 WHITE = (255, 255, 255)
@@ -42,11 +37,17 @@ class Player(Sprite):
         super().__init__()
         # Initialize sprite attributes
         self.image = player_idle[0]  # Initial image for the player
-        self.rect = pygame.Rect(300, 50, 28, 40)
+        self.player_width = 28
+        self.player_height = 40
+        self.rect = pygame.Rect(300, 50, self.player_width, self.player_height)
         self.rect.topleft = (300, 50)
 
+        self.move_speed = 6
+        self.jump_power = -20
+        
         self.x_velocity = 0
         self.y_velocity = 0
+        self.y_velocity_max = 20
 
         self.grounded = False
         self.facing_right = True
@@ -57,13 +58,32 @@ class Player(Sprite):
         # Player movement logic, animations, etc. can go here
         # Gravity
         self.y_velocity += gravity
-        if self.y_velocity < y_velocity_max:
+        if self.y_velocity < self.y_velocity_max:
             self.rect.y += self.y_velocity
         else:
-            self.rect.y += y_velocity_max
+            self.rect.y += self.y_velocity_max
 
         # Animation
         self.handle_animation()
+
+    def check_collisions(self, platforms):
+        for platform in platforms:
+            if self.rect.colliderect(platform.rect):
+                # Handle top collision
+                if self.rect.top < platform.rect.top:
+                    self.rect.bottom = platform.rect.top
+                    self.y_velocity = 0
+                    self.grounded = True
+                # Handle bottom collision
+                elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
+                    self.rect.top = platform.rect.bottom
+                    self.y_velocity = 0
+                # Handle left collision
+                elif self.rect.left < platform.rect.left:
+                    self.rect.right = platform.rect.left
+                # Handle right collision
+                elif self.rect.right > platform.rect.right:
+                    self.rect.left = platform.rect.right
 
     def handle_animation(self):
         if self.grounded:
@@ -114,18 +134,18 @@ class Player(Sprite):
 
     def jump(self):
         if self.grounded:
-            self.y_velocity = jump_power
+            self.y_velocity = self.jump_power
             self.grounded = False  # Immediately set grounded to False after a jump
 
     def move_left(self):
         self.facing_right = False
         self.state = "left"
-        self.x_velocity = -move_speed
+        self.x_velocity = -self.move_speed
 
     def move_right(self):
         self.facing_right = True
         self.state = "right"
-        self.x_velocity = move_speed
+        self.x_velocity = self.move_speed
 
     def move_horizontal(self, scroll_callback):
         if self.facing_right:
@@ -152,13 +172,8 @@ def scroll_map(direction):
             platform.move(-player.x_velocity, 0)
 
 
-# Game loop
-clock = pygame.time.Clock()
-running = True
-player = Player()
-
-while running:
-    # Event handling
+def check_events():
+    global running
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -168,41 +183,33 @@ while running:
             if event.key == pygame.K_SPACE:
                 player.jump()
 
+
+# Game loop
+clock = pygame.time.Clock()
+running = True
+player = Player()
+
+while running:
+    # Event handling
+    check_events()
+
     # Horizontal movement
     player.handle_input(scroll_map)
 
     # Clear the screen
     screen.fill(GREEN)
 
-    # player_animation()
-
     # Blit the platforms
     for platform in platform_list:
         platform.draw(screen)
 
-    blit_pos = (player.rect.centerx - player.image.get_width() // 2, (player.rect.centery - player.image.get_height() // 2) - 5)
+    blit_pos = (
+    player.rect.centerx - player.image.get_width() // 2, (player.rect.centery - player.image.get_height() // 2) - 5)
     player.update()
     screen.blit(player.image, blit_pos)
 
-    # Draw game elements
-
     # Collision with platforms
-    # region
-    for platform in platform_list:
-        if player.rect.colliderect(platform.rect):
-            if player.rect.top < platform.rect.top:
-                player.rect.bottom = platform.rect.top
-                player.y_velocity = 0
-                player.grounded = True
-
-            elif player.y_velocity < 0 and player.rect.top <= platform.rect.bottom:
-                player.rect.top = platform.rect.bottom
-                player.y_velocity = 0
-            elif player.rect.left < platform.rect.left:
-                player.rect.right = platform.rect.left
-            elif player.rect.right > platform.rect.right:
-                player.rect.left = platform.rect.right
-    # endregion
+    player.check_collisions(platform_list)
 
     # DEBUGGING ------------------------------------------------
     # pygame.draw.rect(screen, (0, 0, 255), player.rect, 2)
