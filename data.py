@@ -45,4 +45,12 @@ platform_long7 = pygame.Rect(1750, 250, 800, 20)
 # platform_list = [platform_long, platform_long2, platform_long3, platform_long4, platform_long5, platform_long6,
 #                 platform_long7]
 
+bg1 = pygame.image.load('graphics/bg/FarBG.png').convert_alpha()
+bg2 = pygame.image.load('graphics/bg/FarBottomBG.png').convert_alpha()
+bg3 = pygame.image.load('graphics/bg/FarTopBG.png').convert_alpha()
+bg4 = pygame.image.load('graphics/bg/TreesBG.png').convert_alpha()
+bg5 = pygame.image.load('graphics/bg/TreesFG.png').convert_alpha()
+level_01_image_list = [bg1, bg2, bg3, bg4, bg5]
+
+
 

@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 import sys
-from platforms import Platform, platform_list
+from platforms import Platform, platform_sprites
 
 # Initialize Pygame
 pygame.init()
@@ -44,6 +44,7 @@ class Player(Sprite):
 
         self.move_speed = 6
         self.jump_power = -18
+        self.double_jump = False
         
         self.x_velocity = 0
         self.y_velocity = 0
@@ -165,7 +166,7 @@ class Player(Sprite):
 
 
 def scroll_map(direction):
-    for platform in platform_list:
+    for platform in platform_sprites:
         if direction == 'left':
             platform.move(-player.x_velocity, 0)
         elif direction == 'right':
@@ -200,8 +201,7 @@ while running:
     screen.fill(GREEN)
 
     # Blit the platforms
-    for platform in platform_list:
-        platform.draw(screen)
+    platform_sprites.draw(screen)
 
     blit_pos = (
     player.rect.centerx - player.image.get_width() // 2, (player.rect.centery - player.image.get_height() // 2) - 5)
@@ -209,7 +209,7 @@ while running:
     screen.blit(player.image, blit_pos)
 
     # Collision with platforms
-    player.check_collisions(platform_list)
+    player.check_collisions(platform_sprites)
 
     # DEBUGGING ------------------------------------------------
     # pygame.draw.rect(screen, (0, 0, 255), player.rect, 2)
