@@ -68,6 +68,10 @@ class Player(Sprite):
         else:
             self.rect.y += self.y_velocity_max
 
+        print(self.y_velocity)
+
+
+
         # Animation
         self.handle_animation()
 
@@ -255,7 +259,7 @@ while running:
     # DEBUGGING ------------------------------------------------
     # pygame.draw.rect(screen, (0, 0, 255), player.rect, 2)
     # pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)
-    # print(player.grounded)
+    print(player.grounded)
     # print(player.y_velocity)
 
     # If player falls off map
