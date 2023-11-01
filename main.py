@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 import sys
-from platforms import Platform, platform_sprites
+from platforms import Platform, platform_sprites, mov_plat, mov_platform_sprites, Moving_Platform
 
 # Initialize Pygame
 pygame.init()
@@ -53,6 +53,8 @@ class Player(Sprite):
 
         self.grounded = False
         self.facing_right = True
+        self.on_moving_obstacle = False
+        self.moving = False
         self.state = "idle"
         self.animation_index = 0
 
@@ -80,6 +82,11 @@ class Player(Sprite):
                     self.rect.bottom = platform.rect.top
                     self.y_velocity = 0
                     self.grounded = True
+                    if isinstance(platform, Moving_Platform):
+                        self.on_moving_obstacle = True
+                        self.x_velocity = platform.x_speed
+                    else:
+                        self.on_moving_obstacle = False
                 # Handle bottom collision
                 elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
                     self.rect.top = platform.rect.bottom
@@ -93,35 +100,35 @@ class Player(Sprite):
 
     def handle_animation(self):
         if self.grounded:
-            if self.facing_right:
-                if self.state == 'idle':
-                    self.animation_index += 0.1
-                    if self.animation_index >= len(player_idle):
-                        self.animation_index = 0
-                    self.image = player_idle[int(self.animation_index)]
-                elif self.state == 'right':
+            if self.moving:  # Only show running animation if player is actively moving
+                if self.facing_right:
                     self.animation_index += 0.20
                     if self.animation_index >= len(player_run):
                         self.animation_index = 0
                     self.image = player_run[int(self.animation_index)]
-            else:  # if not facing right
-                if self.state == 'idle':
-                    self.animation_index += 0.1
-                    if self.animation_index >= len(player_idle):
-                        self.animation_index = 0
-                    self.image = player_idle_flip[int(self.animation_index)]
-                elif self.state == 'left':
+                else:  # if not facing right and moving
                     self.animation_index += 0.20
                     if self.animation_index >= len(player_run):
                         self.animation_index = 0
                     self.image = player_run_flip[int(self.animation_index)]
+            else:  # if not moving
+                if self.facing_right:
+                    self.animation_index += 0.1
+                    if self.animation_index >= len(player_idle):
+                        self.animation_index = 0
+                    self.image = player_idle[int(self.animation_index)]
+                else:  # if not facing right and not moving
+                    self.animation_index += 0.1
+                    if self.animation_index >= len(player_idle):
+                        self.animation_index = 0
+                    self.image = player_idle_flip[int(self.animation_index)]
         else:  # if not grounded
             if self.facing_right:
                 self.animation_index += 0.1
                 if self.animation_index >= len(player_jump):
                     self.animation_index = 0
                 self.image = player_jump[int(self.animation_index)]
-            else:
+            else:  # if not grounded and not facing right
                 self.animation_index += 0.1
                 if self.animation_index >= len(player_jump):
                     self.animation_index = 0
@@ -131,10 +138,14 @@ class Player(Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.move_left()
+            self.moving = True  # User is pressing a movement key
         elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.move_right()
+            self.moving = True  # User is pressing a movement key
         else:
-            self.stop_moving()
+            self.moving = False  # No movement key is pressed
+            if not self.on_moving_obstacle:
+                self.stop_moving()
 
         self.move_horizontal(scroll_callback)
 
@@ -177,6 +188,13 @@ def scroll_map(direction):
         elif direction == 'right':
             platform.move(-player.x_velocity, 0)
 
+    for platform in mov_platform_sprites:
+        if direction == 'left':
+            platform.move(-player.x_velocity, 0)
+        elif direction == 'right':
+            platform.move(-player.x_velocity, 0)
+
+
 
 def check_events():
     global running
@@ -207,12 +225,15 @@ while running:
 
     # Blit the platforms
     platform_sprites.draw(screen)
+    screen.blit(mov_plat.image, (mov_plat.rect.x, mov_plat.rect.y))
+    mov_plat.update()
 
     player.update()
     screen.blit(player.image, player.blit_pos)
 
     # Collision with platforms
     player.check_collisions(platform_sprites)
+    player.check_collisions(mov_platform_sprites)
 
     # DEBUGGING ------------------------------------------------
     # pygame.draw.rect(screen, (0, 0, 255), player.rect, 2)
