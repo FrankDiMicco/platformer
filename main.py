@@ -11,6 +11,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FPS = 60
 H_SCROLL_THRESH = 250
+V_SCROLL_THRESH = 150
 
 # Variables
 gravity = 0.9
@@ -54,7 +55,7 @@ class Player(Sprite):
         self.grounded = False
         self.facing_right = True
         self.on_moving_obstacle = False
-        self.moving = False
+        self.keypress_moving = False
         self.state = "idle"
         self.animation_index = 0
 
@@ -100,7 +101,7 @@ class Player(Sprite):
 
     def handle_animation(self):
         if self.grounded:
-            if self.moving:  # Only show running animation if player is actively moving
+            if self.keypress_moving:  # Only show running animation if player is actively moving
                 if self.facing_right:
                     self.animation_index += 0.20
                     if self.animation_index >= len(player_run):
@@ -138,12 +139,12 @@ class Player(Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.move_left()
-            self.moving = True  # User is pressing a movement key
+            self.keypress_moving = True  # User is pressing a movement key
         elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.move_right()
-            self.moving = True  # User is pressing a movement key
+            self.keypress_moving = True  # User is pressing a movement key
         else:
-            self.moving = False  # No movement key is pressed
+            self.keypress_moving = False  # No movement key is pressed
             if not self.on_moving_obstacle:
                 self.stop_moving()
 
@@ -193,7 +194,6 @@ def scroll_map(direction):
             platform.move(-player.x_velocity, 0)
         elif direction == 'right':
             platform.move(-player.x_velocity, 0)
-
 
 
 def check_events():
