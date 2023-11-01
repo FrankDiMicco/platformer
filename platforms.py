@@ -24,8 +24,9 @@ pf_04 = Platform(-300, 510, 300, 20)
 pf_05 = Platform(600, 400, 300, 20)
 pf_06 = Platform(1000, 350, 800, 20)
 pf_07 = Platform(1750, 250, 800, 20)
+pf_08 = Platform(175, 175, 200, 20)
 
-platform_sprites = pygame.sprite.Group(pf_01, pf_02, pf_03, pf_04, pf_05, pf_06, pf_07)
+platform_sprites = pygame.sprite.Group(pf_01, pf_02, pf_03, pf_04, pf_05, pf_06, pf_07, pf_08)
 
 
 # endregion

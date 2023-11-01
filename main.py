@@ -11,7 +11,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FPS = 60
 H_SCROLL_THRESH = 250
-V_SCROLL_THRESH = 150
+V_SCROLL_THRESH = 200
 
 # Variables
 gravity = 0.9
@@ -149,6 +149,7 @@ class Player(Sprite):
                 self.stop_moving()
 
         self.move_horizontal(scroll_callback)
+        self.move_vertical(scroll_callback)
 
     def jump(self):
         if self.grounded:
@@ -177,6 +178,14 @@ class Player(Sprite):
             else:
                 scroll_callback('left')
 
+    def move_vertical(self, scroll_callback):
+        if V_SCROLL_THRESH < self.rect.top < SCREEN_HEIGHT - V_SCROLL_THRESH:
+            pass
+        elif self.rect.top < V_SCROLL_THRESH:
+            scroll_callback('up')
+        elif self.rect.top > SCREEN_HEIGHT - V_SCROLL_THRESH:
+            scroll_callback('down')
+
     def stop_moving(self):
         self.state = "idle"
         self.x_velocity = 0
@@ -188,12 +197,20 @@ def scroll_map(direction):
             platform.move(-player.x_velocity, 0)
         elif direction == 'right':
             platform.move(-player.x_velocity, 0)
+        elif direction == 'up':
+            platform.move(0, 1)
+        elif direction == 'down':
+            platform.move(0, -2)
 
     for platform in mov_platform_sprites:
         if direction == 'left':
             platform.move(-player.x_velocity, 0)
         elif direction == 'right':
             platform.move(-player.x_velocity, 0)
+        elif direction == 'up':
+            platform.move(0, 1)
+        elif direction == 'down':
+            platform.move(0, -2)
 
 
 def check_events():
