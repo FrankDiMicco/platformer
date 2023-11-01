@@ -62,12 +62,14 @@ class Player(Sprite):
     def update(self):
         # Player movement logic, animations, etc. can go here
         # Gravity
+
         self.y_velocity += gravity
         if self.y_velocity < self.y_velocity_max:
             self.rect.y += self.y_velocity
         else:
             self.rect.y += self.y_velocity_max
 
+        print('add gravity')
         print(self.y_velocity)
 
 
@@ -249,6 +251,7 @@ while running:
     screen.blit(mov_plat.image, (mov_plat.rect.x, mov_plat.rect.y))
     mov_plat.update()
 
+    print("player.update()")
     player.update()
     screen.blit(player.image, player.blit_pos)
 
