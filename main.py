@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 import sys
-from platforms import Platform, platform_sprites, mov_plat, mov_platform_sprites, Moving_Platform
+from platforms import platform_sprites, mov_platform_sprites, Moving_Platform, mov_plat01, mov_plat02
 
 # Initialize Pygame
 pygame.init()
@@ -262,11 +262,13 @@ while running:
     screen.fill(GREEN)
 
     # Update the moving platform
-    mov_plat.update()
+    mov_plat01.update()
+    mov_plat02.update()
 
     # Blit the platforms
     platform_sprites.draw(screen)
-    screen.blit(mov_plat.image, (mov_plat.rect.x, mov_plat.rect.y))
+    screen.blit(mov_plat01.image, (mov_plat01.rect.x, mov_plat01.rect.y))
+    screen.blit(mov_plat02.image, (mov_plat02.rect.x, mov_plat02.rect.y))
 
     # Update player - should only happen once per frame
     player.update()
