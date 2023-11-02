@@ -171,7 +171,8 @@ class Player(Sprite):
             self.is_jumping = True
 
     def stop_jump(self):
-        self.y_velocity = 0
+        if self.y_velocity < 0:
+            self.y_velocity = 0
 
     def move_left(self):
         self.facing_right = False
