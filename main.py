@@ -170,6 +170,9 @@ class Player(Sprite):
             self.grounded = False  # Immediately set grounded to False after a jump
             self.is_jumping = True
 
+    def stop_jump(self):
+        self.y_velocity = 0
+
     def move_left(self):
         self.facing_right = False
         self.state = "left"
@@ -237,6 +240,9 @@ def check_events():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.jump()
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                player.stop_jump()
 
 
 # Game loop
