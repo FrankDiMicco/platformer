@@ -20,7 +20,7 @@ class Platform(pygame.sprite.Sprite):
 pf_01 = Platform(0, 550, 200, 20)
 pf_02 = Platform(200, 510, 200, 20)
 pf_03 = Platform(500, 550, 600, 20)
-pf_04 = Platform(-300, 0, 300, 2000) # far left
+pf_04 = Platform(-300, 10, 300, 2000) # far left
 pf_05 = Platform(600, 400, 300, 20)
 pf_06 = Platform(1000, 350, 800, 20)
 pf_07 = Platform(1750, 250, 800, 20)

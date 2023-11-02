@@ -56,6 +56,8 @@ class Player(Sprite):
         self.facing_right = True
         self.on_moving_obstacle = False
         self.keypress_moving = False
+        self.is_falling = True
+        self.is_jumping = False
         self.state = "idle"
         self.animation_index = 0
 
@@ -69,17 +71,20 @@ class Player(Sprite):
         else:
             self.rect.y += self.y_velocity_max
 
-        print('add gravity')
-        print(self.y_velocity)
+        # Collision with platforms
+        self.check_collisions(platform_sprites)
+        self.check_collisions(mov_platform_sprites)
 
-
+        # Check to see if falling
+        if self.grounded and self.y_velocity > 1:
+            self.grounded = False
 
         # Animation
         self.handle_animation()
 
         # Calculate position to blit player
-        self.blit_pos = (
-        self.rect.centerx - self.image.get_width() // 2, (self.rect.centery - self.image.get_height() // 2) - 5)
+        self.blit_pos = (self.rect.centerx - self.image.get_width() // 2,
+                         (self.rect.centery - self.image.get_height() // 2) - 5)
 
     def check_collisions(self, platforms):
         for platform in platforms:
@@ -89,21 +94,23 @@ class Player(Sprite):
                     self.rect.bottom = platform.rect.top
                     self.y_velocity = 0
                     self.grounded = True
+                    self.is_jumping = False
+
                     if isinstance(platform, Moving_Platform):
                         self.on_moving_obstacle = True
                         self.x_velocity = platform.x_speed
                     else:
                         self.on_moving_obstacle = False
-                # Handle bottom collision
-                elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
-                    self.rect.top = platform.rect.bottom
-                    self.y_velocity = 0
                 # Handle left collision
                 elif self.rect.left < platform.rect.left:
                     self.rect.right = platform.rect.left
                 # Handle right collision
                 elif self.rect.right > platform.rect.right:
                     self.rect.left = platform.rect.right
+                # Handle bottom collision
+                elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
+                    self.rect.top = platform.rect.bottom
+                    self.y_velocity = 0
 
     def handle_animation(self):
         if self.grounded:
@@ -161,6 +168,7 @@ class Player(Sprite):
         if self.grounded:
             self.y_velocity = self.jump_power
             self.grounded = False  # Immediately set grounded to False after a jump
+            self.is_jumping = True
 
     def move_left(self):
         self.facing_right = False
@@ -246,28 +254,24 @@ while running:
     # Clear the screen
     screen.fill(GREEN)
 
+    # Update the moving platform
+    mov_plat.update()
+
     # Blit the platforms
     platform_sprites.draw(screen)
     screen.blit(mov_plat.image, (mov_plat.rect.x, mov_plat.rect.y))
-    mov_plat.update()
 
-    print("player.update()")
+    # Update player - should only happen once per frame
     player.update()
     screen.blit(player.image, player.blit_pos)
 
-    # Collision with platforms
-    player.check_collisions(platform_sprites)
-    player.check_collisions(mov_platform_sprites)
-
     # DEBUGGING ------------------------------------------------
-    # pygame.draw.rect(screen, (0, 0, 255), player.rect, 2)
-    # pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)
-    print(player.grounded)
+    # print(player.grounded)
     # print(player.y_velocity)
 
     # If player falls off map
-    if player.rect.top > SCREEN_HEIGHT:
-        player.rect.y = 0
+    if player.rect.top > 2 * SCREEN_HEIGHT:
+        player.rect.y = 10
         player.rect.x = 300
 
     # Update the screen
