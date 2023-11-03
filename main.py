@@ -292,15 +292,11 @@ while running:
 
     # Blit items
     for item in items_group:
-        screen.blit(orb_boost.image, orb_boost.rect)
+        screen.blit(item.image, item.rect)
 
     # Update player - should only happen once per frame
     player.update()
     screen.blit(player.image, player.blit_pos)
-
-    # DEBUGGING ------------------------------------------------
-    # print(player.grounded)
-    # print(player.y_velocity)
 
     # If player falls off map
     if player.rect.top > 2 * SCREEN_HEIGHT:
