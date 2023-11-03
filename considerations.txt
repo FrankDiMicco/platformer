@@ -2,3 +2,6 @@ some ideas:
     slow falling  - for 1s, 2s, 3s
     double jump, triple jump
     dash
+
+
+player can jump about 170 pixels high and 200 pixels long

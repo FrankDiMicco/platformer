@@ -63,9 +63,8 @@ class Player(Sprite):
         self.animation_index = 0
 
     def update(self):
-        # Player movement logic, animations, etc. can go here
-        # Gravity
 
+        # Gravity is added to player up to y_velocity_max
         self.y_velocity += gravity
         if self.y_velocity < self.y_velocity_max:
             self.rect.y += self.y_velocity
@@ -77,8 +76,14 @@ class Player(Sprite):
         self.check_collisions(mov_platform_sprites)
 
         # Check to see if falling
-        if self.grounded and self.y_velocity > 1:
+        if self.grounded and self.y_velocity > 2.9:  # 2.9 seems to prevent animation glitches
             self.grounded = False
+            self.is_falling = True
+
+        # Check to see if player has reached top of jump and has started falling
+        if self.is_jumping and self.y_velocity >= 0:
+            self.is_jumping = False
+            self.is_falling = True
 
         # Animation
         self.handle_animation()
@@ -91,11 +96,12 @@ class Player(Sprite):
         for platform in platforms:
             if self.rect.colliderect(platform.rect):
                 # Handle top collision
-                if self.rect.top < platform.rect.top:
+                if self.rect.top < platform.rect.top and not self.is_jumping:
                     self.rect.bottom = platform.rect.top
                     self.y_velocity = 0
                     self.grounded = True
                     self.is_jumping = False
+                    self.is_falling = False
 
                     if isinstance(platform, Moving_Platform):
                         self.on_moving_obstacle = True
@@ -112,10 +118,11 @@ class Player(Sprite):
                 elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
                     self.rect.top = platform.rect.bottom
                     self.y_velocity = 0
-        for item in items_group:
-            if self.rect.colliderect(item.rect):
-                item.kill()
-
+        for i in items:
+            if self.rect.colliderect(i.rect):
+                if i.effect == 'vert boost':
+                    self.y_velocity = -20
+                # i.kill()
 
     def handle_animation(self):
         if self.grounded:
@@ -175,7 +182,7 @@ class Player(Sprite):
             self.grounded = False  # Immediately set grounded to False after a jump
             self.is_jumping = True
 
-    def stop_jump(self):
+    def variable_jump(self):
         if self.y_velocity < 0:
             self.y_velocity = 0
 
@@ -221,9 +228,9 @@ def scroll_map(direction):
         elif direction == 'right':
             platform.move(-player.x_velocity, 0)
         elif direction == 'up':
-            platform.move(0, 1)
+            platform.move(0, 2)
         elif direction == 'down':
-            platform.move(0, -2)
+            platform.move(0, -3)
 
     for platform in mov_platform_sprites:
         if direction == 'left':
@@ -231,19 +238,19 @@ def scroll_map(direction):
         elif direction == 'right':
             platform.move(-player.x_velocity, 0)
         elif direction == 'up':
-            platform.move(0, 1)
+            platform.move(0, 2)
         elif direction == 'down':
-            platform.move(0, -2)
+            platform.move(0, -3)
 
-    for item in items_group:
+    for item in items:
         if direction == 'left':
             item.move(-player.x_velocity, 0)
         elif direction == 'right':
             item.move(-player.x_velocity, 0)
         elif direction == 'up':
-            item.move(0, 1)
+            item.move(0, 2)
         elif direction == 'down':
-            item.move(0, -2)
+            item.move(0, -3)
 
 
 def check_events():
@@ -256,9 +263,10 @@ def check_events():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.jump()
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:
-                player.stop_jump()
+                player.variable_jump()
 
 
 # Game loop
@@ -267,9 +275,9 @@ running = True
 player = Player()
 
 # test code for item creation
-orb_boost = Item(50, 50, 32, 32)
-items_group = pygame.sprite.Group()
-items_group.add(orb_boost)
+orb_boost = Item(50, 50, 32, 32, 'vert boost')
+items = pygame.sprite.Group()
+items.add(orb_boost)
 
 while running:
     # Event handling
@@ -291,8 +299,7 @@ while running:
     screen.blit(mov_plat02.image, (mov_plat02.rect.x, mov_plat02.rect.y))
 
     # Blit items
-    for item in items_group:
-        screen.blit(item.image, item.rect)
+    items.draw(screen)
 
     # Update player - should only happen once per frame
     player.update()

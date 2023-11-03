@@ -17,13 +17,13 @@ class Platform(pygame.sprite.Sprite):
 
 # Create some platforms
 # region
-pf_01 = Platform(0, 550, 200, 20)
-pf_02 = Platform(200, 510, 200, 20)
-pf_03 = Platform(500, 550, 600, 20)
-pf_04 = Platform(-300, 10, 300, 2000) # far left
-pf_05 = Platform(600, 400, 300, 20)
-pf_06 = Platform(1000, 350, 800, 20)
-pf_07 = Platform(1750, 250, 800, 20)
+pf_01 = Platform(0, 550, 200, 20, 'red')
+pf_02 = Platform(200, 510, 200, 20, 'blue')
+pf_03 = Platform(500, 550, 600, 20, 'green')
+pf_04 = Platform(-300, 10, 300, 2000, 'purple') # far left
+pf_05 = Platform(600, 400, 300, 20, 'orange')
+pf_06 = Platform(1000, 350, 800, 20, 'brown')
+pf_07 = Platform(1750, 250, 800, 20, 'yellow')
 pf_08 = Platform(175, 175, 200, 20)
 
 platform_sprites = pygame.sprite.Group(pf_01, pf_02, pf_03, pf_04, pf_05, pf_06, pf_07, pf_08)
