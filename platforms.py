@@ -55,7 +55,7 @@ class Moving_Platform(Platform):
         if abs(effective_y - self.original_pos[1]) >= self.distance:
             self.y_speed *= -1
 
-    def move(self, x_shift, y_shift):
+    def move(self, x_shift, y_shift=0):
         super().move(x_shift, y_shift)
         # Increase cumulative shift
         self.cumulative_scrolling_x_shift += x_shift
