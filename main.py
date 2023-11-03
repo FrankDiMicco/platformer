@@ -13,6 +13,7 @@ SCREEN_HEIGHT = 600
 FPS = 60
 H_SCROLL_THRESH = 250
 V_SCROLL_THRESH = 200
+PLATFORM_BUFFER = 15  # Helps avoid top collision from the side
 
 # Variables
 gravity = 0.9
@@ -96,7 +97,10 @@ class Player(Sprite):
         for platform in platforms:
             if self.rect.colliderect(platform.rect):
                 # Handle top collision
-                if self.rect.top < platform.rect.top and not self.is_jumping:
+                if self.rect.top + PLATFORM_BUFFER < platform.rect.top and not self.is_jumping:
+                    print(player.rect.bottom)
+                    print(platform.rect.top)
+                    print("-----------------")
                     self.rect.bottom = platform.rect.top
                     self.y_velocity = 0
                     self.grounded = True

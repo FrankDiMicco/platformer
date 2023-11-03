@@ -5,3 +5,7 @@ some ideas:
 
 
 player can jump about 170 pixels high and 200 pixels long
+
+
+things to fix:
+    player can still teleport on top of platforms if "is_falling" and bottom touches platform

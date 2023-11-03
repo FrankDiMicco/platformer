@@ -18,7 +18,7 @@ class Platform(pygame.sprite.Sprite):
 # Create some platforms
 # region
 pf_01 = Platform(0, 550, 200, 20, 'red')
-pf_02 = Platform(200, 510, 200, 20, 'blue')
+pf_02 = Platform(200, 520, 200, 20, 'blue')
 pf_03 = Platform(500, 550, 600, 20, 'green')
 pf_04 = Platform(-300, 10, 300, 2000, 'purple') # far left
 pf_05 = Platform(600, 400, 300, 20, 'orange')
