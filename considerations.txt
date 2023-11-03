@@ -1,0 +1,4 @@
+some ideas:
+    slow falling  - for 1s, 2s, 3s
+    double jump, triple jump
+    dash

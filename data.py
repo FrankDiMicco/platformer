@@ -1,7 +1,6 @@
 import pygame
 
 
-
 # Create the player idle animation lists
 player_idle_1 = pygame.image.load('graphics/player/idle01.png').convert_alpha()
 player_idle_2 = pygame.image.load('graphics/player/idle02.png').convert_alpha()
@@ -45,6 +44,7 @@ platform_long7 = pygame.Rect(1750, 250, 800, 20)
 # platform_list = [platform_long, platform_long2, platform_long3, platform_long4, platform_long5, platform_long6,
 #                 platform_long7]
 
+# For parallax background eventually
 bg1 = pygame.image.load('graphics/bg/FarBG.png').convert_alpha()
 bg2 = pygame.image.load('graphics/bg/FarBottomBG.png').convert_alpha()
 bg3 = pygame.image.load('graphics/bg/FarTopBG.png').convert_alpha()

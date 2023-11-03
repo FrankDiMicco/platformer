@@ -2,6 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 import sys
 from platforms import platform_sprites, mov_platform_sprites, Moving_Platform, mov_plat01, mov_plat02
+from item import Item
 
 # Initialize Pygame
 pygame.init()
@@ -111,6 +112,10 @@ class Player(Sprite):
                 elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
                     self.rect.top = platform.rect.bottom
                     self.y_velocity = 0
+        for item in items_group:
+            if self.rect.colliderect(item.rect):
+                item.kill()
+
 
     def handle_animation(self):
         if self.grounded:
@@ -230,6 +235,16 @@ def scroll_map(direction):
         elif direction == 'down':
             platform.move(0, -2)
 
+    for item in items_group:
+        if direction == 'left':
+            item.move(-player.x_velocity, 0)
+        elif direction == 'right':
+            item.move(-player.x_velocity, 0)
+        elif direction == 'up':
+            item.move(0, 1)
+        elif direction == 'down':
+            item.move(0, -2)
+
 
 def check_events():
     global running
@@ -251,6 +266,11 @@ clock = pygame.time.Clock()
 running = True
 player = Player()
 
+# test code for item creation
+orb_boost = Item(50, 50, 32, 32)
+items_group = pygame.sprite.Group()
+items_group.add(orb_boost)
+
 while running:
     # Event handling
     check_events()
@@ -269,6 +289,10 @@ while running:
     platform_sprites.draw(screen)
     screen.blit(mov_plat01.image, (mov_plat01.rect.x, mov_plat01.rect.y))
     screen.blit(mov_plat02.image, (mov_plat02.rect.x, mov_plat02.rect.y))
+
+    # Blit items
+    for item in items_group:
+        screen.blit(orb_boost.image, orb_boost.rect)
 
     # Update player - should only happen once per frame
     player.update()
