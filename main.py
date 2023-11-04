@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 import sys
-from platforms import platform_sprites, mov_platform_sprites, Moving_Platform, mov_plat01, mov_plat02
+from platforms import platform_sprites, moving_platform_group, Moving_Platform, mov_plat01, mov_plat02
 from item import Item
 
 # Initialize Pygame
@@ -13,7 +13,7 @@ SCREEN_HEIGHT = 600
 FPS = 60
 H_SCROLL_THRESH = 250
 V_SCROLL_THRESH = 200
-PLATFORM_BUFFER = 16  # Helps avoid top collision from the side
+PLATFORM_BUFFER = 15  # Helps avoid top collision from the side
 
 # Variables
 gravity = 0.9
@@ -52,7 +52,7 @@ class Player(Sprite):
 
         self.x_velocity = 0
         self.y_velocity = 0
-        self.y_velocity_max = 20
+        self.y_velocity_max = 18
 
         self.grounded = False
         self.facing_right = True
@@ -74,7 +74,7 @@ class Player(Sprite):
 
         # Collision with platforms
         self.check_collisions(platform_sprites)
-        self.check_collisions(mov_platform_sprites)
+        self.check_collisions(moving_platform_group)
 
         # Check to see if falling
         if self.grounded and self.y_velocity > 2.9:  # 2.9 seems to prevent animation glitches
@@ -233,7 +233,7 @@ def scroll_map(direction):
         elif direction == 'down':
             platform.move(0, -3)
 
-    for platform in mov_platform_sprites:
+    for platform in moving_platform_group:
         if direction == 'left':
             platform.move(-player.x_velocity, 0)
         elif direction == 'right':
@@ -291,15 +291,13 @@ while running:
     screen.fill(GREEN)
 
     # Update the moving platform
-    mov_plat01.update()
-    mov_plat02.update()
+    moving_platform_group.update()
 
     # Blit the platforms
     platform_sprites.draw(screen)
-    screen.blit(mov_plat01.image, (mov_plat01.rect.x, mov_plat01.rect.y))
-    screen.blit(mov_plat02.image, (mov_plat02.rect.x, mov_plat02.rect.y))
+    moving_platform_group.draw(screen)
 
-    # Blit items
+    # Blit the items
     items.draw(screen)
 
     # Update player - should only happen once per frame
