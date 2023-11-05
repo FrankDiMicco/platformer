@@ -57,7 +57,7 @@ class Player(Sprite):
         self.grounded = False
         self.facing_right = True
         self.on_moving_obstacle = False
-        self.keypress_moving = False
+        self.keypress_moving = False  # used for animation of running
         self.is_falling = True
         self.is_jumping = False
         self.state = "idle"
@@ -92,6 +92,8 @@ class Player(Sprite):
         # Calculate position to blit player
         self.blit_pos = (self.rect.centerx - self.image.get_width() // 2,
                          (self.rect.centery - self.image.get_height() // 2) - 5)
+
+        print(self.x_velocity)
 
     def check_collisions(self, platforms):
         for platform in platforms:
@@ -171,7 +173,7 @@ class Player(Sprite):
             self.keypress_moving = True  # User is pressing a movement key
         else:
             self.keypress_moving = False  # No movement key is pressed
-            if not self.on_moving_obstacle:
+            if not self.on_moving_obstacle or not self.grounded:
                 self.stop_moving()
 
         self.move_horizontal(scroll_callback)
