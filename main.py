@@ -43,6 +43,7 @@ class Player(Sprite):
 
         self.move_speed = 6
         self.jump_power = -18
+        self.double_jump_unlocked = True
         self.double_jump = False
 
         self.x_velocity = 0
@@ -99,6 +100,9 @@ class Player(Sprite):
                     self.grounded = True
                     self.is_jumping = False
                     self.is_falling = False
+                    if self.double_jump_unlocked:
+                        self.double_jump = True
+
 
                     if isinstance(platform, Moving_Platform):
                         self.on_moving_obstacle = True
@@ -184,11 +188,14 @@ class Player(Sprite):
         self.move_vertical(scroll_callback)
 
     def jump(self):
-        if self.grounded:
+        if self.grounded or self.double_jump:
+            if not self.grounded:
+                self.double_jump = False
             self.y_velocity = self.jump_power
             self.grounded = False  # Immediately set grounded to False after a jump
             self.is_jumping = True
             self.on_moving_obstacle = False
+
 
     def variable_jump(self):
         if self.y_velocity < 0:
