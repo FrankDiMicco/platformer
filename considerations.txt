@@ -6,6 +6,9 @@ some feature ideas:
     extreme jump
     dash, multi-dash
     grapple
+    side wall grip
+    top wall grip
+    fall damage
 
  parallax background
  level system
@@ -19,9 +22,9 @@ player can jump about 170 pixels high and 200 pixels long
 
 BUGS*****************************************************
 things to fix:
-    player can still teleport on top of platforms if "is_falling" and bottom touches platform - DONElg
+    player can still teleport on top of platforms if "is_falling" and bottom touches platform - DONE
 
  IMPROVEMENTS********************************************
  Better scrolling
     vertical is wack, too slow to follow
-    horizontal currently moves all platforms - very inefficient
+    horizontal currently moves all platforms - inefficient

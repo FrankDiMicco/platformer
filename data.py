@@ -32,6 +32,14 @@ player_run = [player_run_1, player_run_2, player_run_3, player_run_4, player_run
 player_run_flip = [pygame.transform.flip(frame, True, False) for frame in player_run]
 
 
+# For when player is falling animation
+player_fall_01 = pygame.image.load('graphics/player/fall01.png').convert_alpha()
+player_fall_02 = pygame.image.load('graphics/player/fall02.png').convert_alpha()
+player_fall_03 = pygame.image.load('graphics/player/fall03.png').convert_alpha()
+player_fall_04 = pygame.image.load('graphics/player/fall04.png').convert_alpha()
+player_fall = [player_fall_01, player_fall_02, player_fall_03, player_fall_04]
+player_fall_flip = [pygame.transform.flip(frame, True, False) for frame in player_fall]
+
 # For parallax background eventually
 bg1 = pygame.image.load('graphics/bg/FarBG.png').convert_alpha()
 bg2 = pygame.image.load('graphics/bg/FarBottomBG.png').convert_alpha()
@@ -39,6 +47,8 @@ bg3 = pygame.image.load('graphics/bg/FarTopBG.png').convert_alpha()
 bg4 = pygame.image.load('graphics/bg/TreesBG.png').convert_alpha()
 bg5 = pygame.image.load('graphics/bg/TreesFG.png').convert_alpha()
 level_01_image_list = [bg1, bg2, bg3, bg4, bg5]
+
+
 
 
 

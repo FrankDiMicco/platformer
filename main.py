@@ -146,16 +146,26 @@ class Player(Sprite):
                         self.animation_index = 0
                     self.image = player_idle_flip[int(self.animation_index)]
         else:  # if not grounded
-            if self.facing_right:
+            if self.facing_right and self.is_jumping:
                 self.animation_index += 0.1
                 if self.animation_index >= len(player_jump):
                     self.animation_index = 0
                 self.image = player_jump[int(self.animation_index)]
-            else:  # if not grounded and not facing right
+            elif not self.facing_right and self.is_jumping:  # if not grounded and not facing right
                 self.animation_index += 0.1
                 if self.animation_index >= len(player_jump):
                     self.animation_index = 0
                 self.image = player_jump_flip[int(self.animation_index)]
+            elif self.facing_right and self.is_falling:
+                self.animation_index += 0.1
+                if self.animation_index > len(player_fall):
+                    self.animation_index = 0
+                self.image = player_fall[int(self.animation_index)]
+            elif not self.facing_right and self.is_falling:
+                self.animation_index += 0.1
+                if self.animation_index > len(player_fall):
+                    self.animation_index = 0
+                self.image = player_fall_flip[int(self.animation_index)]
 
     def handle_input(self, scroll_callback):
         keys = pygame.key.get_pressed()
@@ -259,11 +269,11 @@ def check_events():
 
         # Jump Logic
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_w or event.key == pygame.K_UP:
                 player.jump()
 
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_w or event.key == pygame.K_UP:
                 player.variable_jump()
 
 
