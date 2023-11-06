@@ -1,11 +1,27 @@
-some ideas:
+
+IDEAS***************************************************
+some feature ideas:
     slow falling  - for 1s, 2s, 3s
     double jump, triple jump
-    dash
+    extreme jump
+    dash, multi-dash
+    grapple
 
+ parallax background
+ level system
+    reach the end of maps to load new level?
+    gain new ability which gives access to different area, all within one big map?
 
+ inventory system
+
+NOTES****************************************************
 player can jump about 170 pixels high and 200 pixels long
 
-
+BUGS*****************************************************
 things to fix:
-    player can still teleport on top of platforms if "is_falling" and bottom touches platform
+    player can still teleport on top of platforms if "is_falling" and bottom touches platform - DONElg
+
+ IMPROVEMENTS********************************************
+ Better scrolling
+    vertical is wack, too slow to follow
+    horizontal currently moves all platforms - very inefficient

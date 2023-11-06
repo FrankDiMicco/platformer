@@ -29,18 +29,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Platformer")
 from data import *
 
-# Create the player
-player_animation_index = 0
-player_surf = player_idle[player_animation_index]
-player_rect = pygame.Rect(300, 50, 28, 40)
-
 
 class Player(Sprite):
     def __init__(self):
         super().__init__()
         # Initialize sprite attributes
         self.image = player_idle[0]  # Initial image for the player
-        self.player_width = 28
+        self.player_width = 20  # used to be 28, lets wait for weird stuff to happen
         self.player_height = 40
         self.rect = pygame.Rect(300, 50, self.player_width, self.player_height)
         self.rect.topleft = (300, 50)
@@ -93,7 +88,6 @@ class Player(Sprite):
         self.blit_pos = (self.rect.centerx - self.image.get_width() // 2,
                          (self.rect.centery - self.image.get_height() // 2) - 5)
 
-        print(self.x_velocity)
 
     def check_collisions(self, platforms):
         for platform in platforms:
@@ -184,6 +178,7 @@ class Player(Sprite):
             self.y_velocity = self.jump_power
             self.grounded = False  # Immediately set grounded to False after a jump
             self.is_jumping = True
+            self.on_moving_obstacle = False
 
     def variable_jump(self):
         if self.y_velocity < 0:
