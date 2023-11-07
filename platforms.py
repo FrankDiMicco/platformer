@@ -35,14 +35,17 @@ pf_01_03 = Platform(1, 600, 600, 200, 500, 'blue')  # 1st blue
 pf_01_04 = Platform(1, 800, 500, 1000, 600, 'blue')  # 2nd blue
 pf_01_05 = Platform(1, 1800, 650, 100, 450, 'blue')  # small 3rd blue
 pf_01_06 = Platform(1, 2100, 600, 300, 500, 'green')  # 1st green
-pf_01_07 = Platform(1, 2400, 400, 600, 700, 'green')
-pf_g = Platform(1, -800, 1150, 4000, 20, 'black')
+pf_01_07 = Platform(1, 2400, 450, 600, 650, 'green')
+pf_01_08 = Platform(1, 3000, 300, 600, 800, 'green')
+pf_01_09 = Platform(1, 4100, 0, 600, 1100, 'purple')
+pf_g = Platform(1, -800, 1150, 5000, 20, 'black')
 
 
 if level == 0:
     platform_sprites = pygame.sprite.Group(pf_01, pf_02, pf_03, pf_04, pf_05, pf_06, pf_07, pf_08, pf_09)
 elif level == 1:
-    platform_sprites = pygame.sprite.Group(pf_01_01, pf_01_02, pf_01_03, pf_01_04, pf_01_05, pf_01_06, pf_01_07, pf_g)
+    platform_sprites = pygame.sprite.Group(pf_01_01, pf_01_02, pf_01_03, pf_01_04, pf_01_05, pf_01_06, pf_01_07, pf_g,
+    pf_01_08, pf_01_09)
 
 
 # endregion
