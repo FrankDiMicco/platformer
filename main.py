@@ -45,6 +45,7 @@ class Player(Sprite):
         self.jump_power = -18
         self.double_jump_unlocked = True
         self.double_jump = False
+        self.wall_cling_unlocked = True
 
         self.x_velocity = 0
         self.y_velocity = 0
@@ -53,11 +54,12 @@ class Player(Sprite):
         self.grounded = False
         self.facing_right = True
         self.on_moving_obstacle = False
-        self.keypress_moving = False  # used for animation of running
+        self.keypress_moving = False  # used for animation of running state
         self.is_falling = True
         self.is_jumping = False
         self.state = "idle"
         self.animation_index = 0
+        self.mouse_buttons = pygame.mouse.get_pressed()
 
     def update(self):
 
@@ -89,8 +91,10 @@ class Player(Sprite):
         self.blit_pos = (self.rect.centerx - self.image.get_width() // 2,
                          (self.rect.centery - self.image.get_height() // 2) - 5)
 
-
     def check_collisions(self, platforms):
+        # Check to see if player is attempting a wall_cling or grapple(future)
+        self.mouse_buttons = pygame.mouse.get_pressed()
+
         for platform in platforms:
             if self.rect.colliderect(platform.rect):
                 # Handle top collision
@@ -103,7 +107,6 @@ class Player(Sprite):
                     if self.double_jump_unlocked:
                         self.double_jump = True
 
-
                     if isinstance(platform, Moving_Platform):
                         self.on_moving_obstacle = True
                         self.x_velocity = platform.x_speed
@@ -112,11 +115,18 @@ class Player(Sprite):
                 # Handle left collision
                 elif self.rect.left < platform.rect.left:
                     self.rect.right = platform.rect.left
-                    print('platforms left collision')
+                    if self.mouse_buttons[2] and self.wall_cling_unlocked:
+                        self.y_velocity = 0
+                        self.y_velocity -= gravity
+
                 # Handle right collision
                 elif self.rect.right > platform.rect.right:
                     self.rect.left = platform.rect.right
-                    print('platforms right collision')
+                    # Handle Wall Cling
+                    if self.mouse_buttons[2] and self.wall_cling_unlocked:
+                        self.y_velocity = 0
+                        self.y_velocity -= gravity
+
                 # Handle bottom collision
                 elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
                     self.rect.top = platform.rect.bottom
@@ -197,7 +207,6 @@ class Player(Sprite):
             self.grounded = False  # Immediately set grounded to False after a jump
             self.is_jumping = True
             self.on_moving_obstacle = False
-
 
     def variable_jump(self):
         if self.y_velocity < 0:

@@ -6,6 +6,7 @@ some feature ideas:
     triple jump
     extreme jump
     wall jump
+    wall cling - DONE - Hold directional arrow and right click
     dash, multi-dash
     grapple
     side wall grip
