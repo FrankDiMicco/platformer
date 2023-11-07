@@ -112,9 +112,11 @@ class Player(Sprite):
                 # Handle left collision
                 elif self.rect.left < platform.rect.left:
                     self.rect.right = platform.rect.left
+                    print('platforms left collision')
                 # Handle right collision
                 elif self.rect.right > platform.rect.right:
                     self.rect.left = platform.rect.right
+                    print('platforms right collision')
                 # Handle bottom collision
                 elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
                     self.rect.top = platform.rect.bottom

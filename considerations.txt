@@ -2,15 +2,17 @@
 IDEAS***************************************************
 some feature ideas:
     slow falling  - for 1s, 2s, 3s
-    double jump, triple jump
+    double jump - DONE - Enabled with self.double_jump_unlocked in Player() class code
+    triple jump
     extreme jump
+    wall jump
     dash, multi-dash
     grapple
     side wall grip
     top wall grip
     fall damage
+    attacking - handheld weapon or projectile weapon
 
- parallax background
  level system
     reach the end of maps to load new level?
     gain new ability which gives access to different area, all within one big map?
@@ -28,3 +30,7 @@ things to fix:
  Better scrolling
     vertical is wack, too slow to follow
     horizontal currently moves all platforms - inefficient
+
+ VISUALS*************************************************
+ parallax background
+ particle affects for walking, landing, jumping etc
