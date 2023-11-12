@@ -26,11 +26,15 @@ player can jump about 170 pixels high and 200 pixels long
 BUGS*****************************************************
 things to fix:
     player can still teleport on top of platforms if "is_falling" and bottom touches platform - DONE
+    upon double jumping, if player wall clings when screen is scrolling up player slides up platforms
 
  IMPROVEMENTS********************************************
  Better scrolling
     vertical is wack, too slow to follow
     horizontal currently moves all platforms - inefficient
+
+  Better wall cling
+    - can repeatedly tap the move button into wall and gradually move down
 
  VISUALS*************************************************
  parallax background

@@ -46,6 +46,7 @@ class Player(Sprite):
         self.double_jump_unlocked = True
         self.double_jump = False
         self.wall_cling_unlocked = True
+        self.wall_cling = False
 
         self.x_velocity = 0
         self.y_velocity = 0
@@ -62,6 +63,7 @@ class Player(Sprite):
         self.mouse_buttons = pygame.mouse.get_pressed()
 
     def update(self):
+        print(self.wall_cling)
 
         # Gravity is added to player up to y_velocity_max
         self.y_velocity += gravity
@@ -97,6 +99,7 @@ class Player(Sprite):
 
         for platform in platforms:
             if self.rect.colliderect(platform.rect):
+
                 # Handle top collision
                 if self.rect.top + PLATFORM_BUFFER < platform.rect.top and not self.is_jumping:
                     self.rect.bottom = platform.rect.top
@@ -112,25 +115,32 @@ class Player(Sprite):
                         self.x_velocity = platform.x_speed
                     else:
                         self.on_moving_obstacle = False
+                    self.wall_cling = False
+
                 # Handle left collision
                 elif self.rect.left < platform.rect.left:
                     self.rect.right = platform.rect.left
-                    if self.mouse_buttons[2] and self.wall_cling_unlocked:
+                    # if self.mouse_buttons[2] and self.wall_cling_unlocked:
+                    if self.wall_cling_unlocked:
                         self.y_velocity = 0
                         self.y_velocity -= gravity
+                        self.wall_cling = True
 
                 # Handle right collision
                 elif self.rect.right > platform.rect.right:
                     self.rect.left = platform.rect.right
                     # Handle Wall Cling
-                    if self.mouse_buttons[2] and self.wall_cling_unlocked:
+                    # if self.mouse_buttons[2] and self.wall_cling_unlocked:
+                    if self.wall_cling_unlocked:
                         self.y_velocity = 0
                         self.y_velocity -= gravity
+                        self.wall_cling = True
 
                 # Handle bottom collision
                 elif self.y_velocity < 0 and self.rect.top <= platform.rect.bottom:
                     self.rect.top = platform.rect.bottom
                     self.y_velocity = 0
+                    self.wall_cling = False
         for i in items:
             if self.rect.colliderect(i.rect):
                 if i.effect == 'vert boost':
@@ -255,6 +265,8 @@ def scroll_map(direction):
             platform.move(-player.x_velocity, 0)
         elif direction == 'up':
             platform.move(0, 2)
+            if player.wall_cling:
+                player.rect.y += .5
         elif direction == 'down':
             platform.move(0, -3)
 
