@@ -82,10 +82,10 @@ class Moving_Platform(Platform):
         self.cumulative_scrolling_y_shift += y_shift
 
 
-mov_plat01 = Moving_Platform(0, 300, 300, 50, 20,1, 0, 200)
+mov_plat01 = Moving_Platform(0, 100, 300, 50, 20,1, 0, 200)
 mov_plat02 = Moving_Platform(0, 410, 50, 50, 20, 0, 1, 100, 'orange')
 mov_plat03 = Moving_Platform(0, 150, -50, 50, 20, 0, 1, 100, 'black')
-mov_plat04 = Moving_Platform(0, 75, -240, 50, 20, 0, 2, 100, 'black')
+mov_plat04 = Moving_Platform(0, 75, -240, 50, 20, 0, 2, 100, 'yellow')
 
 
 moving_platform_group = pygame.sprite.Group(mov_plat01, mov_plat02, mov_plat03, mov_plat04)

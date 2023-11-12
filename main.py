@@ -121,7 +121,7 @@ class Player(Sprite):
                 elif self.rect.left < platform.rect.left:
                     self.rect.right = platform.rect.left
                     # if self.mouse_buttons[2] and self.wall_cling_unlocked:
-                    if self.wall_cling_unlocked:
+                    if self.wall_cling_unlocked and not isinstance(platform, Moving_Platform):
                         self.y_velocity = 0
                         self.y_velocity -= gravity
                         self.wall_cling = True
@@ -131,7 +131,7 @@ class Player(Sprite):
                     self.rect.left = platform.rect.right
                     # Handle Wall Cling
                     # if self.mouse_buttons[2] and self.wall_cling_unlocked:
-                    if self.wall_cling_unlocked:
+                    if self.wall_cling_unlocked and not isinstance(platform, Moving_Platform):
                         self.y_velocity = 0
                         self.y_velocity -= gravity
                         self.wall_cling = True
