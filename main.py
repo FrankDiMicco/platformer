@@ -41,8 +41,8 @@ class Player(Sprite):
         self.rect.topleft = (300, 50)
         self.blit_pos = None
 
-        self.move_speed = 6
-        self.jump_power = -18
+        self.move_speed = 5
+        self.jump_power = -15
         self.double_jump_unlocked = True
         self.double_jump = False
         self.wall_cling_unlocked = True
@@ -63,7 +63,6 @@ class Player(Sprite):
         self.mouse_buttons = pygame.mouse.get_pressed()
 
     def update(self):
-        print(self.wall_cling)
 
         # Gravity is added to player up to y_velocity_max
         self.y_velocity += gravity
@@ -257,6 +256,18 @@ class Player(Sprite):
         self.x_velocity = 0
 
 
+class Enemy(Sprite):
+    def __init__(self, x, y, width, height, life):
+        super().__init__()
+        self.image = pygame.image.load('graphics/enemies/ufo.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (width, height))
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.life = life
+
+    def update(self):
+        pass
+
+
 def scroll_map(direction):
     for platform in platform_sprites:
         if direction == 'left':
@@ -317,6 +328,9 @@ orb_boost = Item(50, 50, 32, 32, 'vert boost')
 items = pygame.sprite.Group()
 items.add(orb_boost)
 
+# test code for enemies
+ufo = Enemy(100, 100, 42, 32, 10)
+
 while running:
     # Event handling
     check_events()
@@ -340,6 +354,10 @@ while running:
     # Update player - should only happen once per frame
     player.update()
     screen.blit(player.image, player.blit_pos)
+
+    # Blit the enemies
+    ufo.update()
+    screen.blit(ufo.image, ufo.rect)
 
     # If player falls off map
     if player.rect.top > 2 * SCREEN_HEIGHT:
