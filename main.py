@@ -262,10 +262,56 @@ class Enemy(Sprite):
         self.image = pygame.image.load('graphics/enemies/ufo.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (width, height))
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.x = x
+        self.y = y
         self.life = life
+        self.x_velocity = -1
+        self.y_velocity = 0
+        self.original_pos = self.rect.topleft
+        self.cumulative_scrolling_x_shift = 0
+        self.cumulative_scrolling_y_shift = 0
 
     def update(self):
-        pass
+        self.y_velocity += gravity
+        self.rect.y += self.y_velocity
+        self.move()
+        self.check_collisions()
+
+    def check_collisions(self):
+        for platform in platform_sprites:
+            if self.rect.colliderect(platform.rect):
+                self.handle_platform_collisions(platform)
+
+    def handle_platform_collisions(self, platform):
+
+        # For top of platform interaction
+        if self.rect.top < platform.rect.top:
+            self.y_velocity = 0
+            self.rect.bottom = platform.rect.top
+            # Check for right edge of platform
+            if self.rect.right > platform.rect.right:
+                self.x_velocity *= -1
+            # Check for left edge of platform
+            elif self.rect.left < platform.rect.left:
+                self.rect.left = platform.rect.left  # Prevent moving past the platform edge
+                self.x_velocity *= -1  # Change direction
+
+        # For left collisions
+        elif self.rect.left < platform.rect.right:
+            self.x_velocity *= -1
+            self.rect.left = platform.rect.right
+
+        # For right collisions
+        elif self.rect.right > platform.rect.left:
+            self.x_velocity *= -1
+            self.rect.right = platform.rect.left
+
+    def move(self, x_shift=0, y_shift=0):
+        self.rect.move_ip(x_shift, y_shift)
+        self.rect.x += self.x_velocity
+
+        self.cumulative_scrolling_x_shift += x_shift
+        self.cumulative_scrolling_y_shift += y_shift
 
 
 def scroll_map(direction):
@@ -301,6 +347,16 @@ def scroll_map(direction):
         elif direction == 'down':
             item.move(0, -3)
 
+    for enemy in enemies:
+        if direction == 'left':
+            enemy.move(-player.x_velocity, 0)
+        elif direction == 'right':
+            enemy.move(-player.x_velocity, 0)
+        elif direction == 'up':
+            enemy.move(0, 2)
+        elif direction == 'down':
+            enemy.move(0, -3)
+
 
 def check_events():
     global running
@@ -329,7 +385,9 @@ items = pygame.sprite.Group()
 items.add(orb_boost)
 
 # test code for enemies
-ufo = Enemy(100, 100, 42, 32, 10)
+ufo = Enemy(200, 100, 42, 32, 10)
+enemies = pygame.sprite.Group()
+enemies.add(ufo)
 
 while running:
     # Event handling
