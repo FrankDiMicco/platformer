@@ -5,7 +5,7 @@ some feature ideas:
     double jump - DONE - Enabled with self.double_jump_unlocked in Player() class code
     triple jump
     extreme jump
-    wall jump
+    wall jump - Enabled, but shit mechanics
     wall cling - DONE - Hold directional arrow and right click
     dash, multi-dash
     grapple

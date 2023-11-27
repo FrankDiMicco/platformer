@@ -45,7 +45,7 @@ class Player(Sprite):
         self.jump_power = -15
         self.double_jump_unlocked = True
         self.double_jump = False
-        self.wall_cling_unlocked = True
+        self.wall_cling_unlocked = False
         self.wall_cling = False
 
         self.x_velocity = 0
@@ -287,7 +287,6 @@ class Enemy(Sprite):
         # For top of platform interaction
         if self.rect.top < platform.rect.top:
             self.y_velocity = 0
-            self.rect.bottom = platform.rect.top
             # Check for right edge of platform
             if self.rect.right > platform.rect.right:
                 self.x_velocity *= -1
@@ -295,6 +294,7 @@ class Enemy(Sprite):
             elif self.rect.left < platform.rect.left:
                 self.rect.left = platform.rect.left  # Prevent moving past the platform edge
                 self.x_velocity *= -1  # Change direction
+            self.rect.bottom = platform.rect.top
 
         # For left collisions
         elif self.rect.left < platform.rect.right:
@@ -307,8 +307,10 @@ class Enemy(Sprite):
             self.rect.right = platform.rect.left
 
     def move(self, x_shift=0, y_shift=0):
-        self.rect.move_ip(x_shift, y_shift)
+
         self.rect.x += self.x_velocity
+
+        self.rect.move_ip(x_shift, y_shift)
 
         self.cumulative_scrolling_x_shift += x_shift
         self.cumulative_scrolling_y_shift += y_shift
@@ -412,6 +414,9 @@ while running:
     # Update player - should only happen once per frame
     player.update()
     screen.blit(player.image, player.blit_pos)
+
+    print(player.wall_cling)
+
 
     # Blit the enemies
     ufo.update()
